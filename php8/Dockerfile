@@ -1,6 +1,16 @@
 FROM node:latest AS node
 
+FROM composer AS composer
+
+RUN composer require "phpunit/phpunit:^8" \
+    --no-interaction \
+    --no-plugins \
+    --no-scripts \
+    --prefer-dist
+
 FROM php:8.0-fpm
+
+COPY --from=composer /app/vendor /vendor
 
 ARG APCU_VERSION=5.1.20
 
@@ -63,6 +73,9 @@ RUN sed -i "$ a xdebug.client_host="${BX_XDEBUG_IP} /usr/local/etc/php/conf.d/xd
     && sed -i "$ a xdebug.client_port="${BX_XDEBUG_PORT} /usr/local/etc/php/conf.d/xdebug.ini \
     && sed -i "$ a default_charset="${BX_DEFAULT_CHARSET} /usr/local/etc/php/conf.d/php.ini \
     && sed -i "$ a mbstring.internal_encoding="${BX_DEFAULT_CHARSET} /usr/local/etc/php/conf.d/mbstring.ini
+
+COPY ./phpunit.xml /phpunit.xml
+COPY ./.bootstrap.php /.bootstrap.php
 
 COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=node /usr/local/bin/node /usr/local/bin/node
