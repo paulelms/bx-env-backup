@@ -81,5 +81,6 @@ COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=node /usr/local/bin/node /usr/local/bin/node
 RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 RUN npm install -g @bitrix/cli
-    
+RUN mkdir -p /home/${CONTAINER_USER} && chown -R ${CONTAINER_USER}:$(id -gn ${CONTAINER_USER}) /home/${CONTAINER_USER}
+
 ENTRYPOINT php-fpm -F
