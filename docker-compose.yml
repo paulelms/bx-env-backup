@@ -151,7 +151,6 @@ services:
       - ${BX_LOGS_PATH}/php-fpm:/var/log/php-fpm
       - bx-public:/var/www/public_html
       - bx-modules:/media/bitrix/modules
-      - bx-langs:/media/bitrix/langs
     container_name: bx-psysh
     networks:
       bx:
