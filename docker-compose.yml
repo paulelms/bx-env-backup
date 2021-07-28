@@ -100,6 +100,8 @@ services:
       - CONTAINER_USER=bx
       - CONTAINER_GROUP=bx
     volumes:
+      - ${BX_JB_PATH}:/media/JetBrains
+      - ${BX_SHELL_PATH}:/media/shell.php
       - ${BX_LOGS_PATH}/php-fpm:/var/log/php-fpm
       - bx-public:/var/www/public_html
       - bx-modules:/media/bitrix/modules
