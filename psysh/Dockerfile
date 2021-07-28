@@ -9,7 +9,7 @@ COPY --from=composer /app/vendor /vendor
 COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-COPY ./config.php /config.php
+COPY ./config.local.php /config.php
 
 # ENTRYPOINT ["/psysh"]
 ENTRYPOINT ["/entrypoint.sh"]

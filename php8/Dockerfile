@@ -74,8 +74,8 @@ RUN sed -i "$ a xdebug.client_host="${BX_XDEBUG_IP} /usr/local/etc/php/conf.d/xd
     && sed -i "$ a default_charset="${BX_DEFAULT_CHARSET} /usr/local/etc/php/conf.d/php.ini \
     && sed -i "$ a mbstring.internal_encoding="${BX_DEFAULT_CHARSET} /usr/local/etc/php/conf.d/mbstring.ini
 
-COPY ./phpunit.xml /phpunit.xml
-COPY ./.bootstrap.php /.bootstrap.php
+COPY ./phpunit.local.xml /phpunit.xml
+COPY ./bootstrap.local.php /.bootstrap.php
 
 COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=node /usr/local/bin/node /usr/local/bin/node
