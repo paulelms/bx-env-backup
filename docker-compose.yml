@@ -3,6 +3,18 @@ version: '3.8'
 
 services:
 
+  mailhog:
+    image: mailhog/mailhog
+    container_name: bx-mailhog
+    restart: always
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      bx:
+        aliases:
+          - mailhog
+
   memcache:
     image: memcached:alpine
     container_name: bx-memcache

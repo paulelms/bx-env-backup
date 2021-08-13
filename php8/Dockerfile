@@ -83,4 +83,12 @@ RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 RUN npm install -g @bitrix/cli
 RUN mkdir -p /home/${CONTAINER_USER} && chown -R ${CONTAINER_USER}:$(id -gn ${CONTAINER_USER}) /home/${CONTAINER_USER}
 
+# mailhog
+RUN apt-get update && apt-get install -y --no-install-recommends curl git
+RUN curl -Lsf 'https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz' | tar -C '/usr/local' -xvzf -
+ENV PATH /usr/local/go/bin:$PATH
+RUN go get github.com/mailhog/mhsendmail
+RUN cp /root/go/bin/mhsendmail /usr/bin/mhsendmail
+RUN echo 'sendmail_path = /usr/bin/mhsendmail --smtp-addr mailhog:1025' > /usr/local/etc/php/conf.d/mailhog.ini
+
 ENTRYPOINT php-fpm -F
