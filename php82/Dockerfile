@@ -1,14 +1,4 @@
-FROM node:latest AS node
-
-FROM composer AS composer
-
-RUN composer require "phpunit/phpunit:^8" \
-    --no-interaction \
-    --no-plugins \
-    --no-scripts \
-    --prefer-dist
-
-FROM php:8.0-fpm
+FROM php:8.2-fpm
 
 ARG APCU_VERSION=5.1.22
 
@@ -75,23 +65,5 @@ RUN sed -i "$ a xdebug.client_host="${BX_XDEBUG_IP} /usr/local/etc/php/conf.d/xd
     && sed -i "$ a mbstring.internal_encoding="${BX_DEFAULT_CHARSET} /usr/local/etc/php/conf.d/mbstring.ini \
     && sed -i "$ a port "${BX_SMTP_PORT} /usr/local/etc/msmtp/msmtp.conf \
     && sed -i "$ a from "${BX_SMTP_FROM} /usr/local/etc/msmtp/msmtp.conf
-
-COPY ./phpunit.local.xml /phpunit.xml
-COPY ./bootstrap.local.php /.bootstrap.php
-
-COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
-COPY --from=node /usr/local/bin/node /usr/local/bin/node
-RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
-RUN npm install -g @bitrix/cli
-RUN npm install -g eslint-plugin-flowtype
-RUN mkdir -p /home/${CONTAINER_USER} && chown -R ${CONTAINER_USER}:$(id -gn ${CONTAINER_USER}) /home/${CONTAINER_USER}
-
-# mailhog
-RUN apt-get update && apt-get install -y --no-install-recommends curl git
-RUN curl -Lsf 'https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz' | tar -C '/usr/local' -xvzf -
-ENV PATH /usr/local/go/bin:$PATH
-RUN go get github.com/mailhog/mhsendmail
-RUN cp /root/go/bin/mhsendmail /usr/bin/mhsendmail
-RUN echo 'sendmail_path = /usr/bin/mhsendmail --smtp-addr mailhog:1025' > /usr/local/etc/php/conf.d/mailhog.ini
 
 ENTRYPOINT php-fpm -F
